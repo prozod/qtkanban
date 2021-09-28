@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Board from "./Board";
 import styled from "styled-components";
 import { items, boardOrder } from "../../tasks";
 import { Task } from "./Task";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { app, db, getUsers, getUserTasks } from "../../firebase";
 
 const Table = styled.section`
 	display: flex;
@@ -14,6 +15,16 @@ const Table = styled.section`
 
 function Canvas() {
 	const [data, setData] = useState(items);
+	const [users, setUsers] = useState([]);
+
+	useEffect(() => {
+		getUsers(db).then(user => setUsers(user));
+	}, []);
+
+	console.log(
+		"canvas-users",
+		users?.map(user => user)
+	);
 
 	const onDragEnd = result => {
 		const { source, destination, draggableId } = result;
@@ -90,7 +101,7 @@ function Canvas() {
 							key={colId}
 							dotColor={boards.color}
 							boardname={boards.title}
-							id={colId}
+							boardId={boards.board_id}
 						>
 							<Droppable key={boards.title} droppableId={boards.board_id}>
 								{(provided, snapshot) => (
@@ -130,6 +141,19 @@ function Canvas() {
 					);
 				})}
 			</DragDropContext>
+			{users?.map(user => {
+				return (
+					<div key={user.id}>
+						<h1>{user.data.userName}</h1>
+						<img
+							src={user.data.imageUrl}
+							width={250}
+							height={250}
+							alt={user.data.userName}
+						/>
+					</div>
+				);
+			})}
 		</Table>
 	);
 }

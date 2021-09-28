@@ -1,10 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
 import Button from "../button/Button";
-import { Input } from "../modal/Form";
+import { Form, Input } from "../modal/Form";
 import { IoMdAdd } from "react-icons/io";
-import { changeState } from "../../features/taskSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { GoCheck } from "react-icons/go";
 
 const BoardArea = styled.div`
 	border: 1px solid #e3e4e6;
@@ -68,22 +67,26 @@ const NewTask = styled.div`
 	margin: 0 15px;
 `;
 
-export default function Board({ boardname, children, dotColor, id }) {
+export default function Board({ boardname, children, dotColor, boardId }) {
 	//ADDING NEW TASK
 	const [taskName, setTaskName] = useState();
+	const [isClicked, setIsClicked] = useState(false);
+
+	const handleClick = () => {
+		setIsClicked(!isClicked);
+	};
 
 	const onInputChange = e => {
-		if (!taskName) return;
+		const { id, value } = e.target;
+		console.log({ [id]: value });
 		setTaskName(e.target.value);
 	};
 
-	//REDUX
-	const isActive = useSelector(state => state.task.isActive);
-	const dispatch = useDispatch();
-	const showInputField = e => {
-		dispatch(changeState());
+	const handleSubmit = e => {
+		e.preventDefault();
+		if (!taskName) return;
+		console.log(taskName);
 	};
-	//
 
 	return (
 		<BoardArea>
@@ -94,19 +97,26 @@ export default function Board({ boardname, children, dotColor, id }) {
 			<Cards>{children}</Cards>
 
 			<NewTask>
-				{isActive && (
-					<Input
-						id={id}
-						type="text"
-						placeholder="Task name"
-						value={taskName}
-						onChange={onInputChange}
-					/>
+				{isClicked && (
+					<Form onSubmit={handleSubmit}>
+						<Input
+							id={boardId}
+							type="text"
+							placeholder="Task name"
+							value={taskName || ""}
+							onChange={onInputChange}
+						/>
+						<Button icon={<GoCheck />} />
+					</Form>
 				)}
-				<Button id={id} icon={<IoMdAdd size={16} />} onClick={showInputField}>
-					Create new issue
-				</Button>
+
+				{!isClicked && (
+					<Button icon={<IoMdAdd size={16} />} onClick={handleClick}>
+						Create new issue
+					</Button>
+				)}
 			</NewTask>
 		</BoardArea>
 	);
 }
+// onclickoutside, set isClicked to false so the create issue shows again

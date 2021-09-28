@@ -3,12 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const taskSlice = createSlice({
 	name: "task",
 	initialState: {
-		isActive: false,
-		newTask: {
-			id: "task-2",
-			task: "Get beer",
-			description: "Hey ho Santa Claus"
-		}
+		isActive: false
 	},
 	reducers: {
 		changeState: (state, action) => {

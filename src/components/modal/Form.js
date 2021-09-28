@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const FormWrapper = styled.form`
 	display: flex;
-	flex-direction: column;
+	flex-direction: ${props => (props.flexdir ? "row" : "column")};
 	flex: 1;
 `;
 
@@ -65,6 +65,10 @@ export const Textarea = ({ id, name, rows, cols }) => {
 	);
 };
 
-export const Form = ({ children, action }) => {
-	return <FormWrapper action={action}>{children}</FormWrapper>;
+export const Form = ({ children, onSubmit, flexdir }) => {
+	return (
+		<FormWrapper flexdir={flexdir} onSubmit={onSubmit}>
+			{children}
+		</FormWrapper>
+	);
 };

@@ -1,12 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {
-	collection,
-	doc,
-	getDocs,
-	getFirestore,
-	query
-} from "firebase/firestore";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,23 +22,43 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const analytics = getAnalytics(app);
 
-export async function getUserTasks(userId) {
-	const userTask = collection(db, `users/${userId}/tasks`);
-	const userTaskSnapshot = await getDocs(userTask);
-	const userTaskList = userTaskSnapshot.docs.map(doc => doc.data());
-	return userTaskList;
-}
+export const updateUserBoard = async (userId, boardId, updatedDocument) => {
+	const boardRef = doc(db, "users", `${userId}`, "boards", `${boardId}`);
+	await updateDoc(boardRef, updatedDocument);
+};
+//Queries
+// async function getUserTasks(userId) {
+// 	const userTask = collection(db, `users/${userId}/tasks`);
+// 	const userTaskSnapshot = await getDocs(userTask);
+// 	const userTaskList = userTaskSnapshot.docs.map(doc => {
+// 		return { id: doc.id, data: doc.data() };
+// 	});
+// 	return userTaskList;
+// }
 
-export async function getUsers(db) {
-	const usersCol = collection(db, "users");
-	const userSnapshot = await getDocs(usersCol);
-	const userList = userSnapshot.docs.map(doc => {
-		const tasks = [];
-		getUserTasks(doc.id).then(task => {
-			return tasks.push(...task);
-		});
-		return { id: doc.id, data: doc.data(), tasks };
-	});
-	return userList;
-}
-// const usersCol = collection(db, "users/aExoAbLJaSetm7KNQaaK/tasks");
+// async function getUserBoards(userId) {
+// 	const userBoard = collection(db, `users/${userId}/boards`);
+// 	const userBoardSnapshot = await getDocs(userBoard);
+// 	const userBoardList = userBoardSnapshot.docs.map(doc => doc.data());
+// 	return userBoardList;
+// }
+
+// export async function getUsers(db) {
+// 	const usersCol = collection(db, "users");
+// 	const userSnapshot = await getDocs(usersCol);
+
+// 	const userList = userSnapshot.docs.map(doc => {
+// 		const tasks = [];
+// 		getUserTasks(doc.id).then(task => {
+// 			return tasks.push(task);
+// 		});
+
+// 		const boards = [];
+// 		getUserBoards(doc.id).then(board => {
+// 			return boards.push(board);
+// 		});
+
+// 		return { id: doc.id, data: doc.data(), tasks, boards };
+// 	});
+// 	return userList;
+// }

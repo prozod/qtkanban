@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Board from "./Board";
 import styled from "styled-components";
-import { items, boardOrder } from "../../tasks";
-import { Task } from "./Task";
+import { items } from "../../tasks";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { app, db, getUsers, getUserTasks } from "../../firebase";
-
+import { db } from "../../firebase";
+import { collection, doc, getDocs, onSnapshot } from "@firebase/firestore";
+import { Task } from "./Task";
 const Table = styled.section`
 	display: flex;
 	width: 100%;
@@ -13,19 +13,25 @@ const Table = styled.section`
 	flex-wrap: wrap;
 `;
 
-function Canvas() {
+function Canvas({ userId }) {
 	const [data, setData] = useState(items);
-	const [users, setUsers] = useState([]);
+	const [boards, setBoards] = useState();
+
+	const destructuredUserId = userId?.map(user => user.id);
 
 	useEffect(() => {
-		getUsers(db).then(user => setUsers(user));
-	}, []);
-
-	console.log(
-		"canvas-users",
-		users?.map(user => user)
-	);
-
+		const fetchData = async userId => {
+			onSnapshot(collection(db, `users/${userId}/boards`), snapshot => {
+				setBoards(
+					snapshot.docs.map(doc => {
+						return { ...doc.data(), id: doc.id };
+					})
+				);
+			});
+		};
+		fetchData(userId?.map(user => user.id));
+	}, [userId]);
+	console.log(boards);
 	const onDragEnd = result => {
 		const { source, destination, draggableId } = result;
 
@@ -92,65 +98,19 @@ function Canvas() {
 
 	return (
 		<Table>
-			<DragDropContext onDragEnd={onDragEnd}>
-				{boardOrder.map(colId => {
-					const boards = data.boards[colId];
-					const tasks = boards.items.map(i => data.tasks[i]);
-					return (
-						<Board
-							key={colId}
-							dotColor={boards.color}
-							boardname={boards.title}
-							boardId={boards.board_id}
-						>
-							<Droppable key={boards.title} droppableId={boards.board_id}>
-								{(provided, snapshot) => (
-									<div
-										ref={provided.innerRef}
-										{...provided.droppableProps}
-										style={{
-											backgroundColor: snapshot.isDraggingOver ? "#ebedfa" : "",
-											minHeight: "150px",
-											margin: 0
-										}}
-									>
-										{tasks.map((t, index) => {
-											return (
-												<Draggable key={t.id} draggableId={t.id} index={index}>
-													{(provided, snapshot) => (
-														<div
-															ref={provided.innerRef}
-															{...provided.draggableProps}
-															{...provided.dragHandleProps}
-														>
-															<Task
-																title={t.task}
-																description={t.description}
-																isDragging={snapshot.isDragging}
-															/>
-														</div>
-													)}
-												</Draggable>
-											);
-										})}
-										{provided.placeholder}
-									</div>
-								)}
-							</Droppable>
-						</Board>
-					);
-				})}
-			</DragDropContext>
-			{users?.map(user => {
+			{boards?.map(board => {
 				return (
-					<div key={user.id}>
-						<h1>{user.data.userName}</h1>
-						<img
-							src={user.data.imageUrl}
-							width={250}
-							height={250}
-							alt={user.data.userName}
-						/>
+					<div key={board.id}>
+						<Board
+							userId={userId?.map(user => user.id)}
+							title={board.title}
+							color={board.color}
+							boardId={board.id}
+						>
+							{board?.items.map(item => {
+								return <Task title={item.title} />;
+							})}
+						</Board>
 					</div>
 				);
 			})}

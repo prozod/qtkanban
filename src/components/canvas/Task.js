@@ -1,4 +1,3 @@
-import { memo } from "react";
 import styled from "styled-components";
 
 const TaskCard = styled.div`
@@ -50,13 +49,13 @@ const TaskCard = styled.div`
 	}
 `;
 
-export const Task = memo(function Task({ title, description, isDragging }) {
+export const Task = ({ key, title, details }) => {
 	return (
-		<TaskCard isDragging={isDragging}>
+		<TaskCard key={key}>
 			<div className="task">
 				<p className="title">{title}</p>
-				<p className="desc">{description}</p>
+				<p className="desc">{details}</p>
 			</div>
 		</TaskCard>
 	);
-});
+};

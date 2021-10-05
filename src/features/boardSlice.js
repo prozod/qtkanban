@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const taskSlice = createSlice({
 	name: "task",
 	initialState: {
-		isActive: false
+		boards: []
 	},
 	reducers: {
 		changeState: (state, action) => {

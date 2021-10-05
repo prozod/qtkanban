@@ -4,6 +4,14 @@ import Button from "../button/Button";
 import { Form, Input } from "../modal/Form";
 import { IoMdAdd } from "react-icons/io";
 import { GoCheck } from "react-icons/go";
+import { updateUserBoard } from "../../firebase";
+import { arrayUnion } from "@firebase/firestore";
+
+const BoardContainer = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	flex: 1;
+`;
 
 const BoardArea = styled.div`
 	border: 1px solid #e3e4e6;
@@ -14,10 +22,10 @@ const BoardArea = styled.div`
 	overflow: hidden;
 	font-family: "Fira Sans", sans-serif;
 	margin-right: 10px;
-	height: 100%;
+	height: auto;
 	display: flex;
-	flex-direction: column;
 	margin-bottom: 15px;
+	flex-direction: column;
 `;
 
 const CardHeader = styled.div`
@@ -60,6 +68,15 @@ const CardHeader = styled.div`
 const Cards = styled.div`
 	position: relative;
 	margin: 10px 15px;
+
+	.emptyboard {
+		margin: 0 auto;
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		padding: 1em 0;
+		color: #636363;
+	}
 `;
 
 const NewTask = styled.div`
@@ -67,56 +84,65 @@ const NewTask = styled.div`
 	margin: 0 15px;
 `;
 
-export default function Board({ boardname, children, dotColor, boardId }) {
+export default function Board({ userId, children, boardId, color, title }) {
 	//ADDING NEW TASK
-	const [taskName, setTaskName] = useState();
+	const [taskName, setTaskName] = useState({ id: 0, value: "" });
 	const [isClicked, setIsClicked] = useState(false);
 
+	//Form handling for new tasks
 	const handleClick = () => {
 		setIsClicked(!isClicked);
 	};
 
 	const onInputChange = e => {
 		const { id, value } = e.target;
-		console.log({ [id]: value });
-		setTaskName(e.target.value);
+		console.log(id, value);
+		setTaskName({ id: id, value: value });
 	};
 
-	const handleSubmit = e => {
+	const handleSubmit = async e => {
 		e.preventDefault();
 		if (!taskName) return;
-		console.log(taskName);
+		updateUserBoard(userId, taskName.id, {
+			items: arrayUnion({ title: taskName.value })
+		});
+
+		setIsClicked(false);
 	};
 
 	return (
-		<BoardArea>
-			<CardHeader dotColor={dotColor}>
-				<p>{boardname}</p>
-			</CardHeader>
+		<BoardContainer>
+			<BoardArea>
+				<CardHeader dotColor={color}>
+					<p>{title}</p>
+				</CardHeader>
 
-			<Cards>{children}</Cards>
+				<Cards>{children}</Cards>
 
-			<NewTask>
-				{isClicked && (
-					<Form onSubmit={handleSubmit}>
-						<Input
-							id={boardId}
-							type="text"
-							placeholder="Task name"
-							value={taskName || ""}
-							onChange={onInputChange}
-						/>
-						<Button icon={<GoCheck />} />
-					</Form>
-				)}
+				<NewTask>
+					{isClicked && (
+						<Form onSubmit={handleSubmit}>
+							<Input
+								id={boardId}
+								type="text"
+								placeholder="Task name"
+								value={taskName.value || ""}
+								onChange={onInputChange}
+							/>
+							<Button icon={<GoCheck />} />
+						</Form>
+					)}
 
-				{!isClicked && (
-					<Button icon={<IoMdAdd size={16} />} onClick={handleClick}>
-						Create new issue
-					</Button>
-				)}
-			</NewTask>
-		</BoardArea>
+					{!isClicked && (
+						<Button icon={<IoMdAdd size={16} />} onClick={handleClick}>
+							Create new issue
+						</Button>
+					)}
+				</NewTask>
+			</BoardArea>
+		</BoardContainer>
 	);
 }
+
 // onclickoutside, set isClicked to false so the create issue shows again
+// collection(db, `users`, `${id}`, `tasks`),

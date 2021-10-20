@@ -1,34 +1,61 @@
 import "./App.css";
-import { Provider } from "react-redux";
-import { store } from "./store";
-import { useEffect, useState } from "react";
-import Canvas from "./components/canvas/Canvas";
-import Header from "./components/header/Header";
-import Sidebar from "./components/sidebar/Sidebar";
-import { db } from "./firebase";
-import { collection, getDocs } from "@firebase/firestore";
+import { useEffect } from "react";
+import { auth, logOut, logIn } from "./firebaseAuth";
+import { useDispatch } from "react-redux";
+import LogIn from "./components/account/LogIn";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Account from "./pages/Account";
+import { loginStatus } from "./features/userSlice";
+import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
-	const [user, setUser] = useState();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const fetchData = async () => {
-			const data = collection(db, "users");
-			const dataSnap = await getDocs(data);
-
-			setUser(dataSnap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-		};
-		fetchData();
-	}, []);
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				dispatch(
+					loginStatus({
+						id: user.uid,
+						email: user.email,
+						username: user.displayName,
+						photo_url: user.photoURL,
+						isLogged: true,
+					})
+				);
+			} else {
+				dispatch(
+					loginStatus({
+						id: "",
+						email: "",
+						username: "",
+						photo_url: "",
+						isLogged: false,
+					})
+				);
+			}
+		});
+	}, [dispatch]);
 
 	return (
-		<div className="App">
-			<Provider store={store}>
-				<Header />
-				<Sidebar />
-				<Canvas userId={user} />
-			</Provider>
-		</div>
+		<Router>
+			<div className="App">
+				<Switch>
+					<Route exact path="/">
+						{<LogIn isLogged={auth.currentUser} action={logIn} />}
+					</Route>
+
+					<Route exact path="/boards">
+						<Dashboard isLogged={auth.currentUser} action={logOut} />
+					</Route>
+
+					<Route exact path="/account">
+						<Account action={logOut} isLogged={auth.currentUser} />
+					</Route>
+				</Switch>
+			</div>
+		</Router>
 	);
 }
 

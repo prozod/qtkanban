@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const FormWrapper = styled.form`
 	display: flex;
-	flex-direction: ${props => (props.flexdir ? "row" : "column")};
+	flex-direction: ${(props) => (props.flexdir ? "row" : "column")};
 	flex: 1;
 `;
 
@@ -23,6 +23,13 @@ const FormInput = styled.input`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+	height: fit-content;
+	border-radius: 10px;
+	transition: all 0.2s ease;
+
+	&:focus {
+		outline: 2px solid #3d4cd1;
+	}
 `;
 
 const FormLabel = styled.label`
@@ -39,12 +46,14 @@ const FormTextArea = styled.textarea`
 	border: 1px solid #e3e4e6;
 	padding: 10px 10px;
 	resize: none;
+	border-radius: 10px;
 `;
 
-export const Input = ({ id, type, value, onChange, placeholder }) => {
+export const Input = ({ id, type, value, onChange, placeholder, ...rest }) => {
 	return (
 		<InputWrapper>
 			<FormInput
+				{...rest}
 				id={id}
 				type={type}
 				value={value}
@@ -56,13 +65,11 @@ export const Input = ({ id, type, value, onChange, placeholder }) => {
 };
 
 export const Label = ({ id, text }) => {
-	return <FormLabel for={id}>{text}</FormLabel>;
+	return <FormLabel htmlFor={id}>{text}</FormLabel>;
 };
 
 export const Textarea = ({ id, name, rows, cols }) => {
-	return (
-		<FormTextArea id={id} name={name} rows={rows} cols={cols}></FormTextArea>
-	);
+	return <FormTextArea id={id} name={name} rows={rows} cols={cols}></FormTextArea>;
 };
 
 export const Form = ({ children, onSubmit, flexdir }) => {

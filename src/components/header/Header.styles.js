@@ -5,6 +5,7 @@ export const Divider = styled.div`
 	left: 0;
 	height: 1px;
 	background-color: #e3e4e6;
+	margin: 1em 0 2em 0;
 `;
 
 export const HeaderWrapper = styled.div`
@@ -14,9 +15,11 @@ export const HeaderWrapper = styled.div`
 
 export const HeaderNavigation = styled.div`
 	display: flex;
+	align-items: center;
 	margin: 1em 0;
 
 	.panel {
+		padding: 0;
 		margin: 0;
 		font-weight: 600;
 		font-size: 1.25rem;

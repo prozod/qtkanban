@@ -1,16 +1,40 @@
+//styling, pages and components
 import "./App.css";
-import { useEffect } from "react";
-import { auth, logOut, logIn } from "./firebaseAuth";
-import { useDispatch } from "react-redux";
-import LogIn from "./components/account/LogIn";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import LogIn from "./pages/LogIn";
 import Dashboard from "./pages/Dashboard";
-import Account from "./pages/Account";
+import UserAccount from "./pages/UserAccount";
+import Register from "./pages/Register";
+
+//state
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { loginStatus } from "./features/userSlice";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "./firebase";
+
+//router
+import ProtectedRoute from "./components/utilities/ProtectedRoute";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+//toast notification popup
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 	const dispatch = useDispatch();
+	const [isLoading, setIsLoading] = useState(true);
+
+	// log out
+	function logOut() {
+		signOut(auth)
+			.then(() => {
+				toast.info("You've been logged out.");
+			})
+			.catch((error) => {
+				toast.error("Wooops! An error occured. Try again.");
+				console.error(error.message);
+			});
+	}
 
 	useEffect(() => {
 		onAuthStateChanged(auth, (user) => {
@@ -35,6 +59,7 @@ function App() {
 					})
 				);
 			}
+			setIsLoading(false);
 		});
 	}, [dispatch]);
 
@@ -43,17 +68,37 @@ function App() {
 			<div className="App">
 				<Switch>
 					<Route exact path="/">
-						{<LogIn isLogged={auth.currentUser} action={logIn} />}
+						{<LogIn isLogged={auth.currentUser} isLoading={isLoading} />}
 					</Route>
 
-					<Route exact path="/boards">
-						<Dashboard isLogged={auth.currentUser} action={logOut} />
+					<Route exact path="/register">
+						{<Register isLogged={auth.currentUser} isLoading={isLoading} />}
 					</Route>
 
-					<Route exact path="/account">
-						<Account action={logOut} isLogged={auth.currentUser} />
-					</Route>
+					<ProtectedRoute
+						exact
+						path="/boards"
+						component={<Dashboard logout={logOut} />}
+						isLoading={isLoading}
+					/>
+					<ProtectedRoute
+						exact
+						path="/account"
+						component={<UserAccount logout={logOut} />}
+						isLoading={isLoading}
+					/>
 				</Switch>
+				<ToastContainer
+					position="bottom-right"
+					autoClose={3000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+				/>
 			</div>
 		</Router>
 	);

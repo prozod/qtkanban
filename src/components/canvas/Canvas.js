@@ -1,24 +1,32 @@
 import { useState, useEffect } from "react";
-import Board from "./Board";
+import Board from "./board/Board";
 import styled from "styled-components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { db, updateBoardItems } from "../../firebase";
 import { collection, onSnapshot } from "@firebase/firestore";
-import { Task } from "./Task";
+import { Task } from "./task/Task";
 import { useSelector } from "react-redux";
+import { Menu } from "../utilities/DropdownOptions";
 
 const Table = styled.section`
 	display: flex;
 	width: 100%;
 	height: auto;
 	flex-wrap: wrap;
+
+	@media (max-width: 768px) {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 0 auto;
+		margin-bottom: 2em;
+	}
 `;
 
 function Canvas() {
 	const [tasks, setTasks] = useState();
 	const [boards, setBoards] = useState();
 	const { id: userId } = useSelector((state) => state?.user.value);
-
 	//getting tasks from firestore
 	useEffect(() => {
 		if (userId === null || userId === "" || userId === undefined) {
@@ -100,15 +108,11 @@ function Canvas() {
 				items: endItems,
 			};
 
-			const newUpdatedData = {
-				...tasks,
-				boards: {
-					...tasks.boards,
-					[withoutDraggedItem.board_id]: withoutDraggedItem,
-					[withDraggedItem.board_id]: withDraggedItem,
-				},
-			};
-			setTasks(newUpdatedData);
+			console.log(withoutDraggedItem, withDraggedItem);
+
+			updateBoardItems(userId, start.id, withoutDraggedItem);
+			updateBoardItems(userId, end.id, withDraggedItem);
+			// setTasks(newUpdatedData);
 		}
 	};
 
@@ -136,7 +140,13 @@ function Canvas() {
 
 					return (
 						<div key={board.id}>
-							<Board userId={userId} title={board.title} color={board.color} boardId={board.id}>
+							<Board
+								userId={userId}
+								title={board.title}
+								color={board.color}
+								boardId={board.id}
+								boardItems={board.items}
+							>
 								<Droppable key={board.id} droppableId={board.board_id}>
 									{(provided, snapshot) => (
 										<div
@@ -144,8 +154,9 @@ function Canvas() {
 											{...provided.droppableProps}
 											style={{
 												backgroundColor: snapshot.isDraggingOver ? "#ebedfa" : "",
-												minHeight: "150px",
+												minHeight: "100px",
 												margin: 0,
+												borderRadius: "10px",
 											}}
 										>
 											{reorderedBoards.map((task, index) => {

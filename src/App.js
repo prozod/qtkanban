@@ -2,7 +2,7 @@
 import "./App.css";
 import LogIn from "./pages/LogIn";
 import Dashboard from "./pages/Dashboard";
-import UserAccount from "./pages/UserAccount";
+import UserAccount from "./pages/Account";
 import Register from "./pages/Register";
 
 //state

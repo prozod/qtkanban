@@ -8,6 +8,7 @@ import {
 	collection,
 	arrayUnion,
 	serverTimestamp,
+	deleteDoc,
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "@firebase/auth";
 
@@ -65,4 +66,9 @@ export const createNewUserDocumentWithEmail = async (userDocument, username, pho
 		photoURL: photoUrl,
 		registeredOn: serverTimestamp(),
 	});
+};
+
+//DELETE TASK
+export const deleteTask = async (userId, taskId) => {
+	await deleteDoc(doc(db, "users", `${userId}`, "tasks", `${taskId}`));
 };

@@ -70,7 +70,8 @@ export const CardHeader = styled.div`
 			width: 10px;
 			height: 10px;
 			border-radius: 50%;
-			background-color: ${(props) => (props.dotColor ? props.dotColor : "")};
+			background-color: ${(props) =>
+				props.dotColor ? props.dotColor : ""};
 		}
 		&:after {
 			content: "";
@@ -101,13 +102,4 @@ export const Cards = styled.div`
 export const NewTask = styled.div`
 	position: relative;
 	margin: 0 15px;
-`;
-
-export const ButtonContainer = styled.div`
-	display: flex;
-
-	button {
-		margin: 5px;
-		padding: 5px 10px;
-	}
 `;

@@ -43,7 +43,7 @@ const AddIcon = styled.div`
 	}
 `;
 
-function AddNewBoard({ onClick }) {
+function CreateBoard({ onClick }) {
 	return (
 		<Wrapper>
 			<AddIcon onClick={onClick}>
@@ -56,4 +56,4 @@ function AddNewBoard({ onClick }) {
 	);
 }
 
-export default AddNewBoard;
+export default CreateBoard;

@@ -7,7 +7,6 @@ import userAvatar from "../../images/useravatar.webp";
 
 const Wrapper = styled.div`
 	display: flex;
-
 	height: 100vh;
 	width: 100%;
 	justify-content: center;
@@ -89,7 +88,7 @@ const UserEmail = styled.p`
 	}
 `;
 
-export default function Profile({ logout }) {
+export default function UserProfile({ logout }) {
 	const user = useSelector((state) => state?.user.value);
 	console.log(user.photo_url);
 	return (

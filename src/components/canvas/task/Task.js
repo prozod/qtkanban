@@ -1,14 +1,35 @@
 import { TaskCard } from "./Task.styles";
 import { FiMoreVertical } from "react-icons/fi";
-import { useState } from "react";
-import { Menu } from "../../utilities/DropdownOptions";
+import { useState, useEffect } from "react";
+import { DropdownTaskMenu, menuRef } from "../../utilities/DropdownTaskMenu";
+import { useDispatch } from "react-redux";
+import { dragDisabled } from "../../../features/draggingSlice";
 
-export const Task = ({ key, title, details }) => {
+export const Task = ({ key, title, details, boardId }) => {
+	const dispatch = useDispatch();
 	const [showDropdown, setShowDropdown] = useState(false);
+
+	function useOutside(ref) {
+		useEffect(() => {
+			function handleClickOutside(event) {
+				if (ref.current && !ref.current.contains(event.target)) {
+					setShowDropdown(false);
+					dispatch(dragDisabled(false));
+				}
+			}
+
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		}, [ref]);
+	}
+
+	useOutside(menuRef);
 
 	function handleDropdown() {
 		setShowDropdown(!showDropdown);
-		console.log("menu here");
+		dispatch(dragDisabled(true));
 	}
 
 	return (
@@ -23,6 +44,7 @@ export const Task = ({ key, title, details }) => {
 					<FiMoreVertical size={19} title="Options" />
 				</div>
 			</div>
+			{showDropdown && <DropdownTaskMenu taskId={details} boardId={boardId} />}
 		</TaskCard>
 	);
 };

@@ -1,18 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "../../button/Button";
 import { Form, Input } from "../../utilities/Form";
 import { IoMdAdd } from "react-icons/io";
-import { GoCheck, GoX } from "react-icons/go";
+import { GoCheck } from "react-icons/go";
 import { createNewTask } from "../../../firebase";
-import {
-	BoardContainer,
-	BoardArea,
-	CardHeader,
-	Cards,
-	NewTask,
-	Divider,
-	ButtonContainer,
-} from "./Board.styles";
+import { BoardContainer, BoardArea, CardHeader, Cards, NewTask, Divider } from "./Board.styles";
 import { toast } from "react-toastify";
 
 export default function Board({ userId, children, boardId, color, title, boardItems }) {
@@ -45,13 +37,24 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 		setIsClicked(false);
 	};
 
-	const closeInput = (e) => {
-		if (e.target) {
-			console.log("ye");
-		} else {
-			setIsClicked(false);
-		}
-	};
+	function useOutside(ref) {
+		useEffect(() => {
+			function handleClickOutside(event) {
+				if (ref.current && !ref.current.contains(event.target)) {
+					setIsClicked(false);
+					setTaskName({ id: 0, value: "" });
+				}
+			}
+
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		}, [ref]);
+	}
+
+	const newtaskRef = useRef(null);
+	useOutside(newtaskRef);
 
 	return (
 		<BoardContainer>
@@ -64,7 +67,7 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 				<Divider />
 				<Cards>{children}</Cards>
 
-				<NewTask onClick={closeInput}>
+				<NewTask ref={newtaskRef}>
 					{isClicked && (
 						<Form onSubmit={handleSubmit}>
 							<Input
@@ -74,10 +77,7 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 								value={taskName.value || ""}
 								onChange={onInputChange}
 							/>
-							<ButtonContainer>
-								<Button icon={<GoCheck size={18} />} />
-								<Button icon={<GoX size={18} />} onClick={() => setIsClicked(false)} />
-							</ButtonContainer>
+							<Button icon={<GoCheck size={18} />} />
 						</Form>
 					)}
 

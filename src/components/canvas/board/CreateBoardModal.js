@@ -66,7 +66,7 @@ const ColorPicker = styled.div`
 	}
 `;
 
-export default function AddNewBoardModal({ closeModal }) {
+export default function CreateBoardModal({ closeModal }) {
 	const [pickedColor, setPickedColor] = useState("");
 	const [boardName, setBoardName] = useState("");
 	const user = useSelector((state) => state?.user.value);

@@ -6,7 +6,6 @@ import { db, updateBoardItems } from "../../firebase";
 import { collection, onSnapshot } from "@firebase/firestore";
 import { Task } from "./task/Task";
 import { useSelector } from "react-redux";
-import { Menu } from "../utilities/DropdownOptions";
 
 const Table = styled.section`
 	display: flex;
@@ -27,6 +26,8 @@ function Canvas() {
 	const [tasks, setTasks] = useState();
 	const [boards, setBoards] = useState();
 	const { id: userId } = useSelector((state) => state?.user.value);
+	const dragDisabled = useSelector((state) => state?.disableDrag.isDisabled);
+
 	//getting tasks from firestore
 	useEffect(() => {
 		if (userId === null || userId === "" || userId === undefined) {
@@ -123,8 +124,9 @@ function Canvas() {
 				{boards?.map((board) => {
 					//get all the current tasks and see if theyre on any board
 					let taskList = tasks.filter((task) => board.items.includes(task.id));
-					let reorderedBoards = []; // sorting the tasks by the index of each individual board.items array
 
+					// sorting the tasks by the index of each individual board.items array
+					let reorderedBoards = [];
 					board.items.forEach((key) => {
 						let found = false;
 						taskList = taskList.filter((item) => {
@@ -161,7 +163,12 @@ function Canvas() {
 										>
 											{reorderedBoards.map((task, index) => {
 												return (
-													<Draggable key={task.id} draggableId={task.id} index={index}>
+													<Draggable
+														key={task.id}
+														draggableId={task.id}
+														index={index}
+														isDragDisabled={dragDisabled ? true : false}
+													>
 														{(provided, snapshot) => (
 															<div
 																ref={provided.innerRef}
@@ -172,6 +179,7 @@ function Canvas() {
 																	title={task.name}
 																	details={task.id}
 																	isDragging={snapshot.isDragging}
+																	boardId={board.id}
 																/>
 															</div>
 														)}

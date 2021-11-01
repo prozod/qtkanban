@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { HeaderWrapper, Divider, HeaderNavigation, BoardsNavigation } from "./Header.styles";
 
-import AddNewBoard from "../canvas/board/AddNewBoard";
-import AddNewBoardModal from "../canvas/board/AddNewBoardModal";
+import CreateBoard from "../canvas/board/CreateBoardButton";
+import CreateBoardModal from "../canvas/board/CreateBoardModal";
 
 export default function Header() {
 	const [toggleModal, setToggleModal] = useState(false);
@@ -16,11 +16,11 @@ export default function Header() {
 		<HeaderWrapper>
 			<HeaderNavigation>
 				<p className="panel">Boards</p>
-				<AddNewBoard onClick={toggle} />
+				<CreateBoard onClick={toggle} />
 			</HeaderNavigation>
 			<Divider />
-			{toggleModal && <AddNewBoardModal closeModal={toggle} />}
-			{/* <AddNewBoardModal /> */}
+			{toggleModal && <CreateBoardModal closeModal={toggle} />}
+
 			{/* <BoardsNavigation>
 				<p className="name">
 					Project Selenium <RiArrowDownSFill size={20} />

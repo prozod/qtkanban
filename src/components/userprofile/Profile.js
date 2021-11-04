@@ -90,7 +90,7 @@ const UserEmail = styled.p`
 
 export default function UserProfile({ logout }) {
 	const user = useSelector((state) => state?.user.value);
-	console.log(user.photo_url);
+	console.log(user);
 	return (
 		<Wrapper>
 			<ProfileCardWrapper>

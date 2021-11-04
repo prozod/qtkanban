@@ -1,50 +1,54 @@
 import { useState } from "react";
-import { Form, Input, Label } from "../components/utilities/Form";
-import { Wrapper, Box, Header, Divider, UniqueFormWrapper } from "./styles/AccountCreation.styles";
+import { Form, Input, Label } from "../utilities/Form";
+import { Wrapper, Box, Header, Divider, UniqueFormWrapper } from "./styles/Account.styles";
 import qtlogo from "../images/qt.png";
 import Button from "../components/button/Button";
 import { IoArrowForwardSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-
 import { useHistory, withRouter } from "react-router";
-
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, createNewUserDocumentWithEmail } from "../firebase";
 
-function Register({ isLogged, isLoading }) {
-	const [email, setEmail] = useState("");
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-	const [profilePicture, setProfilePicture] = useState("");
-	const [equalPasswords, setEqualPasswords] = useState(false);
+function SignUp({ isLogged, isLoading }) {
+	const [user, setUser] = useState({
+		email: "",
+		username: "",
+		password: "",
+		confirmPassword: "",
+		profilePicture: "",
+	});
 
 	let history = useHistory();
 
+	if (auth.currentUser !== null) history.push("/boards");
+
 	function resetFields() {
-		setEmail("");
-		setUsername("");
-		setPassword("");
-		setConfirmPassword("");
-		setEqualPasswords(false);
-		setProfilePicture("");
+		setUser({
+			email: "",
+			username: "",
+			password: "",
+			confirmPassword: "",
+			profilePicture: "",
+		});
 	}
 
 	function createAccWithUserAndPassword(e) {
 		e.preventDefault();
 
-		if (password !== "" && confirmPassword !== "" && confirmPassword === password) {
-			setEqualPasswords(true);
-
-			createUserWithEmailAndPassword(auth, email, password)
+		if (
+			user.password !== "" &&
+			user.confirmPassword !== "" &&
+			user.confirmPassword === user.password
+		) {
+			createUserWithEmailAndPassword(auth, user.email, user.password)
 				.then((userCredential) => {
 					// Signed in
-					const user = userCredential.user;
+					const userDoc = userCredential.user;
 
-					updateProfile(user, {
-						displayName: username,
-						photoURL: profilePicture,
+					updateProfile(userDoc, {
+						displayName: user?.username,
+						photoURL: user?.profilePicture,
 					})
 						.then(() => {
 							console.log("Profile created & updated");
@@ -56,9 +60,9 @@ function Register({ isLogged, isLoading }) {
 							);
 						});
 
-					createNewUserDocumentWithEmail(user, username, profilePicture);
-					console.log("USER DETAILS:", user);
-					toast.success(`We're glad to have you, ${username}!`);
+					createNewUserDocumentWithEmail(userDoc, user?.username, user?.profilePicture);
+					console.log("USER DETAILS:", userDoc);
+					toast.success(`We're glad to have you, ${user?.username}!`);
 					resetFields();
 					history.push("/boards");
 				})
@@ -75,7 +79,7 @@ function Register({ isLogged, isLoading }) {
 			toast.error("Passwords are invalid");
 		}
 	}
-
+	console.log(user);
 	return (
 		<Wrapper>
 			<Box>
@@ -92,40 +96,40 @@ function Register({ isLogged, isLoading }) {
 						<Input
 							required
 							placeholder="Example: address@email.com"
-							value={email}
+							value={user.email}
 							type="text"
-							onChange={(e) => setEmail(e.target.value)}
+							onChange={(e) => setUser({ ...user, email: e.target.value })}
 						/>
 						<Label id="username" text="Username" />
 						<Input
 							required
 							placeholder="What do your friends call you?"
-							value={username}
+							value={user.username}
 							type="text"
-							onChange={(e) => setUsername(e.target.value)}
+							onChange={(e) => setUser({ ...user, username: e.target.value })}
 						/>
 						<Label id="password" text="Password" />
 						<Input
 							required
 							placeholder="Minimum 6 characters"
 							type="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
+							value={user.password}
+							onChange={(e) => setUser({ ...user, password: e.target.value })}
 						/>
 						<Label id="confirmPassword" text="Password confirmation" />
 						<Input
 							required
 							placeholder="Re-type the password you entered above"
 							type="password"
-							value={confirmPassword}
-							onChange={(e) => setConfirmPassword(e.target.value)}
+							value={user.confirmPassword}
+							onChange={(e) => setUser({ ...user, confirmPassword: e.target.value })}
 						/>
 						<Label id="profilePicture" text="Profile picture URL" />
 						<Input
 							placeholder="This field is optional"
-							value={profilePicture}
+							value={user.profilePicture}
 							type="text"
-							onChange={(e) => setProfilePicture(e.target.value)}
+							onChange={(e) => setUser({ ...user, profilePicture: e.target.value })}
 						/>
 						<Button>
 							Create account
@@ -134,7 +138,7 @@ function Register({ isLogged, isLoading }) {
 							</span>
 						</Button>
 					</Form>
-					<Link className="registerAnchor" to="/">
+					<Link className="registerAnchor" to="/signin">
 						<span>Go back</span>
 					</Link>
 				</UniqueFormWrapper>
@@ -143,4 +147,4 @@ function Register({ isLogged, isLoading }) {
 	);
 }
 
-export default withRouter(Register);
+export default withRouter(SignUp);

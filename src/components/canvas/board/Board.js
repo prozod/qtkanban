@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Button from "../../button/Button";
-import { Form, Input } from "../../utilities/Form";
+import { Form, Input } from "../../../utilities/Form";
 import { IoMdAdd } from "react-icons/io";
 import { GoCheck } from "react-icons/go";
 import { createNewTask } from "../../../firebase";
@@ -61,7 +61,12 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 			<BoardArea>
 				<CardHeader dotColor={color}>
 					<p>
-						{title} {boardItems.length > 0 ? <span>{boardItems.length}</span> : null}
+						{title}{" "}
+						{boardItems.length > 0 ? (
+							<span aria-describedby="Currently active" role="button">
+								{boardItems.length}
+							</span>
+						) : null}
 					</p>
 				</CardHeader>
 				<Divider />

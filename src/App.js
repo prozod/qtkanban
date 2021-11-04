@@ -1,9 +1,10 @@
 //styling, pages and components
-import "./App.css";
-import LogIn from "./pages/LogIn";
+import GlobalStyle from "./globalStyles";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import UserAccount from "./pages/Account";
-import Register from "./pages/Register";
+import { HOME, SIGN_UP, SIGN_IN, ACCOUNT, BOARDS } from "./constants/routes";
 
 //state
 import { useEffect, useState } from "react";
@@ -12,13 +13,14 @@ import { loginStatus } from "./features/userSlice";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./firebase";
 
-//router
-import ProtectedRoute from "./components/utilities/ProtectedRoute";
+//router (v5)
+import ProtectedRoute from "./utilities/ProtectedRoute";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 //toast notification popup
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Spinner from "./utilities/Spinner";
 
 function App() {
 	const dispatch = useDispatch();
@@ -65,28 +67,34 @@ function App() {
 
 	return (
 		<Router>
+			<GlobalStyle />
 			<div className="App">
 				<Switch>
-					<Route exact path="/">
-						{<LogIn isLogged={auth.currentUser} isLoading={isLoading} />}
+					<Route exact path={SIGN_IN}>
+						{<SignIn isLogged={auth.currentUser} />}
 					</Route>
 
-					<Route exact path="/register">
-						{<Register isLogged={auth.currentUser} isLoading={isLoading} />}
+					<Route exact path={SIGN_UP}>
+						{<SignUp isLogged={auth.currentUser} />}
 					</Route>
 
-					<ProtectedRoute
-						exact
-						path="/boards"
-						component={<Dashboard logout={logOut} />}
-						isLoading={isLoading}
-					/>
-					<ProtectedRoute
-						exact
-						path="/account"
-						component={<UserAccount logout={logOut} />}
-						isLoading={isLoading}
-					/>
+					{isLoading ? (
+						<Spinner />
+					) : (
+						<ProtectedRoute exact path={HOME} component={<Dashboard logout={logOut} />} />
+					)}
+
+					{isLoading ? (
+						<Spinner />
+					) : (
+						<ProtectedRoute exact path={BOARDS} component={<Dashboard logout={logOut} />} />
+					)}
+
+					{isLoading ? (
+						<Spinner />
+					) : (
+						<ProtectedRoute exact path={ACCOUNT} component={<UserAccount logout={logOut} />} />
+					)}
 				</Switch>
 				<ToastContainer
 					position="bottom-right"

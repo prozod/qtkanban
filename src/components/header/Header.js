@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HeaderWrapper, Divider, HeaderNavigation, BoardsNavigation } from "./Header.styles";
+import { HeaderWrapper, Divider, HeaderNavigation } from "./Header.styles";
 
 import CreateBoard from "../canvas/board/CreateBoardButton";
 import CreateBoardModal from "../canvas/board/CreateBoardModal";

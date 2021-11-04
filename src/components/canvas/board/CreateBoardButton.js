@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 	height: auto;
 `;
 
-const AddIcon = styled.div`
+const AddIcon = styled.button`
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -17,6 +17,7 @@ const AddIcon = styled.div`
 	padding: 5px 10px;
 	transition: all 150ms ease;
 	background-color: #e3e4e6;
+	border: none;
 	border-radius: 10px;
 
 	span {
@@ -46,7 +47,7 @@ const AddIcon = styled.div`
 function CreateBoard({ onClick }) {
 	return (
 		<Wrapper>
-			<AddIcon onClick={onClick}>
+			<AddIcon onClick={onClick} aria-label="Add new board">
 				<span>
 					<IoAdd size={15} title="Add a new board" />
 				</span>

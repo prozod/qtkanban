@@ -8,20 +8,20 @@ import {
 	Divider,
 	DividerGroup,
 	UniqueFormWrapper,
-} from "./styles/AccountCreation.styles";
+} from "./styles/Account.styles";
 import qtlogo from "../images/qt.png";
 import { useHistory, withRouter } from "react-router";
 import { toast } from "react-toastify";
 import { signInWithPopup, getAdditionalUserInfo, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, provider, createNewUserDocumentWithGoogle } from "../firebase";
-import { Input, Label, Form } from "../components/utilities/Form";
+import { Input, Label, Form } from "../utilities/Form";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const LogIn = () => {
-	let history = useHistory();
+const SignIn = () => {
 	const [userEmail, setUserEmail] = useState("");
 	const [userPassword, setUserPassword] = useState("");
+	let history = useHistory();
 
 	if (auth.currentUser !== null) history.push("/boards");
 
@@ -105,7 +105,7 @@ const LogIn = () => {
 						/>
 						<p className="forgottenpassword">Forgot your password?</p>
 						<Button type="submit">Log In</Button>
-						<Link className="registerAnchor" to="/register">
+						<Link className="registerAnchor" to="/signup">
 							Don't have an account? <span>Register now!</span>
 						</Link>
 					</Form>
@@ -115,4 +115,4 @@ const LogIn = () => {
 	);
 };
 
-export default withRouter(LogIn);
+export default withRouter(SignIn);

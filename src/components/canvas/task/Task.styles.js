@@ -18,6 +18,8 @@ export const TaskCard = styled.div`
 		border-radius: 10px;
 
 		.moreOptions {
+			border: none;
+			background: none;
 			cursor: pointer;
 			margin: 0;
 			padding: 2.5px 5px;
@@ -28,6 +30,10 @@ export const TaskCard = styled.div`
 			&:hover {
 				background-color: #e8e8e8;
 				cursor: pointer;
+			}
+
+			&:focus {
+				background-color: #e8e8e8;
 			}
 		}
 

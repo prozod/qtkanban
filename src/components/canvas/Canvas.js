@@ -6,6 +6,7 @@ import { db, updateBoardItems } from "../../firebase";
 import { collection, onSnapshot } from "@firebase/firestore";
 import { Task } from "./task/Task";
 import { useSelector } from "react-redux";
+import EditTask from "./task/EditTask";
 
 const Table = styled.section`
 	display: flex;
@@ -27,6 +28,14 @@ function Canvas() {
 	const [boards, setBoards] = useState();
 	const { id: userId } = useSelector((state) => state?.user.value);
 	const dragDisabled = useSelector((state) => state?.disableDrag.isDisabled);
+	const editMenuState = useSelector((state) => state.editMenu.isActive);
+	const menuTaskId = useSelector((state) => state.editMenu.taskId);
+
+	// GET A TASK DOCUMENT BY ID
+	// const getTaskDocument = async (userId, taskId) => {
+	// 	const docRef = doc(db, "users", `${userId}`, "tasks", `${taskId}`);
+	// 	await getDoc(docRef);
+	// };
 
 	//getting tasks from firestore
 	useEffect(() => {
@@ -195,6 +204,9 @@ function Canvas() {
 					);
 				})}
 			</DragDropContext>
+			{editMenuState && (
+				<EditTask title={menuTaskId} task={tasks?.find((t) => t.id === menuTaskId)} />
+			)}
 		</Table>
 	);
 }

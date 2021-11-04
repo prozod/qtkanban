@@ -5,6 +5,7 @@ import {
 	updateDoc,
 	setDoc,
 	addDoc,
+	getDoc,
 	collection,
 	arrayUnion,
 	serverTimestamp,

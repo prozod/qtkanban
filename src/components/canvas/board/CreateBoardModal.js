@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Backdrop from "../../utilities/Backdrop";
+import Backdrop from "../../../utilities/Backdrop";
 import styled from "styled-components";
-import { Input, Label, Form } from "../../utilities/Form";
+import { Input, Label, Form } from "../../../utilities/Form";
 import Button from "../../button/Button";
 import { GithubPicker } from "react-color";
 import { toast } from "react-toastify";

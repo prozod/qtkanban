@@ -24,7 +24,7 @@ const BasicButton = styled.div`
 		/* border: 1px solid #e3e4e6; */
 
 		position: relative;
-		width: 100%;
+		width: fit-content;
 		border-radius: 10px;
 
 		span {
@@ -37,6 +37,12 @@ const BasicButton = styled.div`
 			background-color: #3d4cd1;
 		}
 	}
+`;
+
+export const ButtonGroup = styled.div`
+	display: flex;
+	white-space: nowrap;
+	justify-content: center;
 `;
 
 export default function Button({ children, icon, onClick, type, id }) {

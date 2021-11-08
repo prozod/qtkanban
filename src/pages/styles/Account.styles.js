@@ -1,16 +1,13 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.section`
-	width: 100vw;
+	width: 100%;
 	height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	font-family: "Fira Sans", sans-serif;
-	background-color: #f6f8f9;
-	left: 0;
-	top: 0;
-	position: fixed;
+	background-color: transparent;
 
 	@media (max-width: 768px) {
 		width: 100%;
@@ -49,7 +46,6 @@ export const Box = styled.div`
 	max-width: 350px;
 	width: 100%;
 
-
 	.NewAccount {
 		color: #1f1f1f;
 		margin: 0 auto;
@@ -58,7 +54,7 @@ export const Box = styled.div`
 		@media (max-width: 768px) {
 			font-size: 1rem;
 			height: 100%;
-
+		}
 	}
 `;
 

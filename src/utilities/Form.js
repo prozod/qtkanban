@@ -17,14 +17,14 @@ const FormInput = styled.input`
 	font-family: "Fira Sans", sans-serif;
 	border: 1px solid #e3e4e6;
 	margin: 5px 0;
-	padding: 7px 10px;
+	padding: 7px 12px;
 	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	width: 100%;
 	height: fit-content;
-	border-radius: 10px;
+	border-radius: 20px;
 	transition: all 0.2s ease;
 
 	&:focus {
@@ -46,7 +46,7 @@ const FormTextArea = styled.textarea`
 	border: 1px solid #e3e4e6;
 	padding: 10px 10px;
 	resize: none;
-	border-radius: 10px;
+	border-radius: 20px;
 `;
 
 export const Input = ({ id, type, value, onChange, placeholder, ...rest }) => {

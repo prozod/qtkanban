@@ -1,21 +1,13 @@
 import { Route, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { RouteTransition } from "./AnimatedRoutes";
 
-export default function ProtectedRoute({ component, ...rest }) {
+export default function ProtectedRoute({ component, path, ...rest }) {
 	const user = useSelector((state) => state?.user.value);
 
 	return (
-		<>
-			<Route
-				{...rest}
-				render={(props) => {
-					if (user.isLogged) {
-						return component;
-					} else {
-						return <Redirect to={{ pathname: "/signin", state: { from: props.location } }} />;
-					}
-				}}
-			/>
-		</>
+		<RouteTransition {...rest} path={path}>
+			{user.isLogged ? component : <Redirect to={{ pathname: "/signin" }} />}
+		</RouteTransition>
 	);
 }

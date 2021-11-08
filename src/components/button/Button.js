@@ -5,9 +5,9 @@ const BasicButton = styled.div`
 	justify-content: center;
 	align-items: center;
 	margin-bottom: 15px;
-	width: fit-content;
+	/* width: fit-content; */
 	flex: 1;
-	width: 100%;
+	/* width: 100%; */
 
 	button {
 		background: #4d5deb;
@@ -21,11 +21,9 @@ const BasicButton = styled.div`
 		color: #fff;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		/* border: 1px solid #e3e4e6; */
-
 		position: relative;
 		width: fit-content;
-		border-radius: 10px;
+		border-radius: 20px;
 
 		span {
 			margin-right: 5px;

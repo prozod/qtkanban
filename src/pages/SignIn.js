@@ -10,20 +10,20 @@ import {
 	UniqueFormWrapper,
 } from "./styles/Account.styles";
 import qtlogo from "../images/qt.png";
-import { useHistory, withRouter } from "react-router";
+import { Redirect, useHistory, withRouter } from "react-router";
 import { toast } from "react-toastify";
 import { signInWithPopup, getAdditionalUserInfo, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, provider, createNewUserDocumentWithGoogle } from "../firebase";
 import { Input, Label, Form } from "../utilities/Form";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { BOARDS } from "../constants/routes";
 
 const SignIn = () => {
 	const [userEmail, setUserEmail] = useState("");
 	const [userPassword, setUserPassword] = useState("");
 	let history = useHistory();
-
-	if (auth.currentUser !== null) history.push("/boards");
+	if (auth.currentUser !== null) return <Redirect to={BOARDS} />;
 
 	// log in with email and password
 	function logInWithEmailAndPw(e) {
@@ -36,7 +36,7 @@ const SignIn = () => {
 				// ...
 				console.log("LOGGED IN WITH: ", userEmail, userPassword);
 				toast.success(`Welcome back, ${user.displayName}!`);
-				history.push("/boards");
+				history.push({ BOARDS });
 			})
 			.catch((error) => {
 				if (error.code === "auth/user-not-found") {

@@ -6,6 +6,8 @@ import { GoCheck } from "react-icons/go";
 import { createNewTask } from "../../../firebase";
 import { BoardContainer, BoardArea, CardHeader, Cards, NewTask, Divider } from "./Board.styles";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { createTaskVariant } from "../../../utilities/Variants";
 
 export default function Board({ userId, children, boardId, color, title, boardItems }) {
 	const [taskName, setTaskName] = useState({ id: 0, value: "" });
@@ -58,6 +60,7 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 
 	return (
 		<BoardContainer>
+			{/* <motion.div key="boards" initial={{ opacity: 0, y: "10vh" }} animate={{ opacity: 1, y: 0 }}> */}
 			<BoardArea>
 				<CardHeader dotColor={color}>
 					<p>
@@ -75,24 +78,32 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 				<NewTask ref={newtaskRef}>
 					{isClicked && (
 						<Form onSubmit={handleSubmit}>
-							<Input
-								id={boardId}
-								type="text"
-								placeholder="Task name"
-								value={taskName.value || ""}
-								onChange={onInputChange}
-							/>
-							<Button icon={<GoCheck size={18} />} />
+							<motion.div
+								key="formInput"
+								variants={createTaskVariant}
+								initial="initial"
+								animate={isClicked ? "animate" : "initial"}
+								exit="exit"
+							>
+								<Input
+									id={boardId}
+									type="text"
+									placeholder="Task name"
+									value={taskName.value || ""}
+									onChange={onInputChange}
+								/>
+							</motion.div>
+							<Button icon={<GoCheck size={18} />}>Add task</Button>
 						</Form>
 					)}
-
 					{!isClicked && (
 						<Button icon={<IoMdAdd size={16} />} onClick={handleClick}>
-							Create new issue
+							Create new task
 						</Button>
 					)}
 				</NewTask>
 			</BoardArea>
+			{/* </motion.div> */}
 		</BoardContainer>
 	);
 }

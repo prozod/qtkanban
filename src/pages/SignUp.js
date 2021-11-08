@@ -6,9 +6,10 @@ import Button from "../components/button/Button";
 import { IoArrowForwardSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { useHistory, withRouter } from "react-router";
+import { Redirect, useHistory, withRouter } from "react-router";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, createNewUserDocumentWithEmail } from "../firebase";
+import { BOARDS } from "../constants/routes";
 
 function SignUp({ isLogged, isLoading }) {
 	const [user, setUser] = useState({
@@ -21,7 +22,7 @@ function SignUp({ isLogged, isLoading }) {
 
 	let history = useHistory();
 
-	if (auth.currentUser !== null) history.push("/boards");
+	if (auth.currentUser !== null) return <Redirect to={BOARDS} />;
 
 	function resetFields() {
 		setUser({
@@ -64,7 +65,7 @@ function SignUp({ isLogged, isLoading }) {
 					console.log("USER DETAILS:", userDoc);
 					toast.success(`We're glad to have you, ${user?.username}!`);
 					resetFields();
-					history.push("/boards");
+					history.push({ BOARDS });
 				})
 				.catch((error) => {
 					if (error.code === "auth/invalid-email") {

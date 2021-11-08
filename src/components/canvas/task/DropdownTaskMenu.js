@@ -1,13 +1,16 @@
+// styling + icons
 import styled from "styled-components";
 import { AiOutlineEdit } from "react-icons/ai";
 import { IoTrashOutline } from "react-icons/io5";
-import { createRef } from "react";
-import { deleteTask, updateBoardItems } from "../firebase";
-import { useSelector, useDispatch } from "react-redux";
-import { arrayRemove } from "@firebase/firestore";
-import { dragDisabled } from "../features/draggingSlice";
-import { editActive, getId } from "../features/editSlice";
 import { toast } from "react-toastify";
+
+// states, refs, firebase
+import { createRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteTask, updateBoardItems } from "../../../firebase";
+import { arrayRemove } from "@firebase/firestore";
+import { dragDisabled } from "../../../features/draggingSlice";
+import { editActive, getId } from "../../../features/editSlice";
 
 const MenuWrapper = styled.div`
 	display: flex;
@@ -61,7 +64,6 @@ export const DropdownTaskMenu = ({ taskId, boardId }) => {
 					dispatch(dragDisabled(true));
 					dispatch(editActive(true));
 					dispatch(getId(taskId));
-
 					console.log(`Editing task ${taskId}`);
 				}}
 			>

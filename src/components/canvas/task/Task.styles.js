@@ -14,7 +14,7 @@ export const TaskCard = styled.div`
 		line-height: 18px;
 		display: flex;
 		justify-content: space-between;
-		align-items: flex-start;
+		align-items: center;
 		border-radius: 10px;
 
 		.moreOptions {

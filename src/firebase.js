@@ -5,7 +5,6 @@ import {
 	updateDoc,
 	setDoc,
 	addDoc,
-	getDoc,
 	collection,
 	arrayUnion,
 	serverTimestamp,
@@ -48,6 +47,12 @@ export const createNewBoard = async (userId, newDocument) => {
 // PUT/UPDATE board data
 export const updateBoardItems = async (userId, boardId, updatedDocument) => {
 	const boardRef = doc(db, "users", `${userId}`, "boards", `${boardId}`);
+	await updateDoc(boardRef, updatedDocument);
+};
+
+// PUT/UPDATE task document
+export const updateTaskDocument = async (userId, taskId, updatedDocument) => {
+	const boardRef = doc(db, "users", `${userId}`, "tasks", `${taskId}`);
 	await updateDoc(boardRef, updatedDocument);
 };
 

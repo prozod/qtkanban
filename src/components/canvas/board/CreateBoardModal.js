@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { createNewBoard } from "../../../firebase";
 import { useSelector } from "react-redux";
 import { GoX } from "react-icons/go";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ModalWrapper = styled.div`
 	display: flex;
@@ -18,7 +19,7 @@ const ModalWrapper = styled.div`
 	max-width: 300px;
 	width: 100%;
 	height: fit-content;
-	border-radius: 10px;
+	border-radius: 20px;
 	padding: 1em 2em;
 	border: 1px solid rgba(255, 255, 255, 0.5);
 	filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0.1));
@@ -52,6 +53,7 @@ const ModalWrapper = styled.div`
 
 	button {
 		margin-top: 1.5em;
+		width: 100vw;
 	}
 `;
 
@@ -100,29 +102,53 @@ export default function CreateBoardModal({ closeModal }) {
 		}
 	}
 
+	const modalVariants = {
+		initial: {
+			position: "absolute",
+			opacity: 0,
+			transform: "scale(0.7)",
+		},
+		animate: {
+			position: "absolute",
+			transform: "scale(1)",
+			opacity: 1,
+			transition: {
+				type: "tween",
+				duration: 0.25,
+				when: "afterChildren",
+			},
+		},
+	};
+
 	return (
 		<Backdrop onClick={closeModal}>
-			<ModalWrapper onClick={(e) => e.stopPropagation()}>
-				<div className="ModalTitle">
-					<p>Create a new board</p>
-					<span onClick={closeModal}>
-						<GoX title="Close modal" />
-					</span>
-				</div>
-				<Form onSubmit={handleSubmit}>
-					<Label id="boardname" text="Board name" />
-					<Input id="boardname" value={boardName} onChange={onBoardNameChange} />
-					<ColorPicker>
-						<Label text="Board color" />
-						<span>
-							<GithubPicker triangle="hide" color={pickedColor} onChange={handleChange} />
+			<motion.div
+				variants={modalVariants}
+				initial="initial"
+				animate={closeModal ? "animate" : "initial"}
+			>
+				<ModalWrapper onClick={(e) => e.stopPropagation()}>
+					<div className="ModalTitle">
+						<p>Create a new board</p>
+						<span onClick={closeModal}>
+							<GoX title="Close modal" />
 						</span>
-					</ColorPicker>
-					<Button type="submit" className="Btn">
-						Create board
-					</Button>
-				</Form>
-			</ModalWrapper>
+					</div>
+					<Form onSubmit={handleSubmit}>
+						<Label id="boardname" text="Board name" />
+						<Input id="boardname" value={boardName} onChange={onBoardNameChange} />
+						<ColorPicker>
+							<Label text="Board color" />
+							<span>
+								<GithubPicker triangle="hide" color={pickedColor} onChange={handleChange} />
+							</span>
+						</ColorPicker>
+						<Button type="submit" className="Btn">
+							Create board
+						</Button>
+					</Form>
+				</ModalWrapper>
+			</motion.div>
 		</Backdrop>
 	);
 }

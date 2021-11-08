@@ -29,7 +29,7 @@ export const BoardArea = styled.div`
 	display: flex;
 	margin-bottom: 15px;
 	flex-direction: column;
-	border-radius: 10px;
+	border-radius: 20px;
 `;
 
 export const CardHeader = styled.div`
@@ -70,8 +70,7 @@ export const CardHeader = styled.div`
 			width: 10px;
 			height: 10px;
 			border-radius: 50%;
-			background-color: ${(props) =>
-				props.dotColor ? props.dotColor : ""};
+			background-color: ${(props) => (props.dotColor ? props.dotColor : "")};
 		}
 		&:after {
 			content: "";
@@ -102,4 +101,8 @@ export const Cards = styled.div`
 export const NewTask = styled.div`
 	position: relative;
 	margin: 0 15px;
+
+	button {
+		width: 100vw;
+	}
 `;

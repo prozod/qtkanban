@@ -3,29 +3,33 @@ import GlobalStyle from "./globalStyles";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
-import UserAccount from "./pages/Account";
+import Account from "./pages/Account";
 import { HOME, SIGN_UP, SIGN_IN, ACCOUNT, BOARDS } from "./constants/routes";
+import Error from "./pages/Error";
 
 //state
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginStatus } from "./features/userSlice";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./firebase";
 
 //router (v5)
 import ProtectedRoute from "./utilities/ProtectedRoute";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 //toast notification popup
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Spinner from "./utilities/Spinner";
+import { AnimatedRoutes, RouteTransition } from "./utilities/AnimatedRoutes";
+import Sidebar from "./components/sidebar/Sidebar";
 
 function App() {
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(true);
-
+	const { isLogged } = useSelector((state) => state?.user.value);
+	console.log(isLogged);
 	// log out
 	function logOut() {
 		signOut(auth)
@@ -37,7 +41,7 @@ function App() {
 				console.error(error.message);
 			});
 	}
-
+	console.log(window.location.pathname);
 	useEffect(() => {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
@@ -69,14 +73,15 @@ function App() {
 		<Router>
 			<GlobalStyle />
 			<div className="App">
-				<Switch>
-					<Route exact path={SIGN_IN}>
-						{<SignIn isLogged={auth.currentUser} />}
-					</Route>
+				{isLogged && <Sidebar logout={logOut} />}
+				<AnimatedRoutes exitBeforeEnter initial={false}>
+					<RouteTransition exact path={SIGN_IN}>
+						<SignIn isLogged={auth.currentUser} />
+					</RouteTransition>
 
-					<Route exact path={SIGN_UP}>
-						{<SignUp isLogged={auth.currentUser} />}
-					</Route>
+					<RouteTransition exact path={SIGN_UP}>
+						<SignUp isLogged={auth.currentUser} />
+					</RouteTransition>
 
 					{isLoading ? (
 						<Spinner />
@@ -87,15 +92,17 @@ function App() {
 					{isLoading ? (
 						<Spinner />
 					) : (
-						<ProtectedRoute exact path={BOARDS} component={<Dashboard logout={logOut} />} />
+						<ProtectedRoute exact path={BOARDS} component={<Dashboard />} />
 					)}
 
 					{isLoading ? (
 						<Spinner />
 					) : (
-						<ProtectedRoute exact path={ACCOUNT} component={<UserAccount logout={logOut} />} />
+						<ProtectedRoute exact path={ACCOUNT} component={<Account logout={logOut} />} />
 					)}
-				</Switch>
+
+					<Route component={Error} />
+				</AnimatedRoutes>
 				<ToastContainer
 					position="bottom-right"
 					autoClose={3000}

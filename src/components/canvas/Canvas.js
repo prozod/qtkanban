@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
-import Board from "./board/Board";
 import styled from "styled-components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
+// components + styles + animations
+import EditPanel from "./task/EditPanel";
+import Board from "./board/Board";
+import { Task } from "./task/Task";
+import { motion, AnimatePresence } from "framer-motion";
+import { editPanelVariants } from "../../utilities/Variants";
+
+// state + firebase
 import { db, updateBoardItems } from "../../firebase";
 import { collection, onSnapshot } from "@firebase/firestore";
-import { Task } from "./task/Task";
 import { useSelector } from "react-redux";
-import EditTask from "./task/EditTask";
 
 const Table = styled.section`
 	display: flex;
@@ -30,12 +36,6 @@ function Canvas() {
 	const dragDisabled = useSelector((state) => state?.disableDrag.isDisabled);
 	const editMenuState = useSelector((state) => state.editMenu.isActive);
 	const menuTaskId = useSelector((state) => state.editMenu.taskId);
-
-	// GET A TASK DOCUMENT BY ID
-	// const getTaskDocument = async (userId, taskId) => {
-	// 	const docRef = doc(db, "users", `${userId}`, "tasks", `${taskId}`);
-	// 	await getDoc(docRef);
-	// };
 
 	//getting tasks from firestore
 	useEffect(() => {
@@ -118,8 +118,6 @@ function Canvas() {
 				items: endItems,
 			};
 
-			console.log(withoutDraggedItem, withDraggedItem);
-
 			updateBoardItems(userId, start.id, withoutDraggedItem);
 			updateBoardItems(userId, end.id, withDraggedItem);
 			// setTasks(newUpdatedData);
@@ -130,9 +128,9 @@ function Canvas() {
 	return (
 		<Table>
 			<DragDropContext onDragEnd={onDragEnd}>
-				{boards?.map((board) => {
+				{boards?.map((board, i) => {
 					//get all the current tasks and see if theyre on any board
-					let taskList = tasks.filter((task) => board.items.includes(task.id));
+					let taskList = tasks?.filter((task) => board.items.includes(task.id));
 
 					// sorting the tasks by the index of each individual board.items array
 					let reorderedBoards = [];
@@ -150,7 +148,15 @@ function Canvas() {
 					});
 
 					return (
-						<div key={board.id}>
+						<motion.div
+							key={board.id}
+							initial={{ opacity: 0, y: "5vh" }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{
+								duration: 0.2,
+								delay: i * 0.2,
+							}}
+						>
 							<Board
 								userId={userId}
 								title={board.title}
@@ -200,13 +206,23 @@ function Canvas() {
 									)}
 								</Droppable>
 							</Board>
-						</div>
+						</motion.div>
 					);
 				})}
 			</DragDropContext>
-			{editMenuState && (
-				<EditTask title={menuTaskId} task={tasks?.find((t) => t.id === menuTaskId)} />
-			)}
+
+			<AnimatePresence>
+				{editMenuState && (
+					<motion.div
+						variants={editPanelVariants}
+						initial="initial"
+						animate={editMenuState ? "animate" : "initial"}
+						exit="exit"
+					>
+						<EditPanel task={tasks?.find((t) => t.id === menuTaskId)} />
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</Table>
 	);
 }

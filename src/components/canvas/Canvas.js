@@ -18,7 +18,7 @@ import { updateBoards, updateTasks } from "../../features/userSlice";
 const Table = styled.section`
 	display: flex;
 	flex-wrap: wrap;
-	padding: 0 5em;
+	padding: 0 10em;
 	margin: 0;
 
 	@media (max-width: 768px) {
@@ -91,7 +91,7 @@ function Canvas() {
 	// drag and drop functionality
 	const onDragEnd = (result) => {
 		const { source, destination, draggableId } = result;
-		console.log("From:", source, "To:", destination, "What:", draggableId);
+		// console.log("From:", source, "To:", destination, "What:", draggableId);
 
 		if (!destination) return;
 		if (source.index === destination.index && source.droppableId === destination.droppableId)

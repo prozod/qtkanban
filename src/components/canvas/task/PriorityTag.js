@@ -96,5 +96,9 @@ const PriorityWrap = styled.div`
 `;
 
 export const PriorityTagWrapper = ({ text }) => {
-	return <PriorityWrap priority={text}>{text}</PriorityWrap>;
+	return (
+		<PriorityWrap priority={text}>
+			{text.substr(0, 1).toUpperCase() + text.substr(1, text.length)}
+		</PriorityWrap>
+	);
 };

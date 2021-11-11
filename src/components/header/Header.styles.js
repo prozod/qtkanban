@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const HeaderWrapper = styled.div`
 	display: flex;
-	padding: 0 5em;
+	padding: 0 10em;
 	flex-direction: column;
 
 	@media (max-width: 768px) {

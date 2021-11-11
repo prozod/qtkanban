@@ -27,7 +27,7 @@ export default function DeleteBoardModal({ boardItems, userId, boardId, setDropd
 						<p>
 							<span>Attention!</span> <br />
 							The board still has {boardItems.length} active
-							{boardItems.length > 1 ? "tasks" : "task"}. Removing it will also delete the tasks
+							{boardItems.length > 1 ? " tasks" : " task"}. Removing it will also delete the tasks
 							permanently. <br /> Do you wish to continue?
 						</p>
 					) : (

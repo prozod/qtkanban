@@ -36,7 +36,6 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 
 	const onInputChange = (e) => {
 		const { id, value } = e.target;
-		console.log(id, value);
 		setTaskName({ id: id, value: value });
 	};
 

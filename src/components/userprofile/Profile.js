@@ -15,10 +15,14 @@ import {
 
 export default function UserProfile({ logout }) {
 	const user = useSelector((state) => state?.user.value);
-	console.log(user);
+
 	return (
 		<Wrapper>
-			<motion.div key="boards" initial={{ opacity: 0, y: "10vh" }} animate={{ opacity: 1, y: 0 }}>
+			<motion.div
+				key="boards"
+				initial={{ opacity: 0, scale: 0.8 }}
+				animate={{ opacity: 1, scale: 1 }}
+			>
 				<ProfileCardWrapper>
 					<Avatar>
 						<img src={user.photo_url || userAvatar} alt={user.username} />

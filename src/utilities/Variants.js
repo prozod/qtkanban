@@ -37,6 +37,7 @@ export const editPanelVariants = {
 		position: "fixed",
 		x: "0vw",
 		opacity: 1,
+		width: "100vw",
 		transition: {
 			type: "tween",
 			duration: 0.5,

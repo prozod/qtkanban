@@ -78,3 +78,8 @@ export const createNewUserDocumentWithEmail = async (userDocument, username, pho
 export const deleteTask = async (userId, taskId) => {
 	await deleteDoc(doc(db, "users", `${userId}`, "tasks", `${taskId}`));
 };
+
+//DELETE BOARD
+export const deleteBoard = async (userId, boardId) => {
+	await deleteDoc(doc(db, "users", `${userId}`, "boards", `${boardId}`));
+};

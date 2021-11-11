@@ -1,16 +1,22 @@
 import styled from "styled-components";
 
+export const HeaderWrapper = styled.div`
+	display: flex;
+	padding: 0 5em;
+	flex-direction: column;
+
+	@media (max-width: 768px) {
+		margin: 0 1em;
+		padding: 0;
+	}
+`;
+
 export const Divider = styled.div`
 	width: 100%;
 	left: 0;
 	height: 1px;
 	background-color: #e3e4e6;
 	margin: 1em 0 2em 0;
-`;
-
-export const HeaderWrapper = styled.div`
-	display: flex;
-	flex-direction: column;
 `;
 
 export const HeaderNavigation = styled.div`

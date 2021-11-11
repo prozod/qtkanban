@@ -2,11 +2,13 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
 	display: flex;
-	height: 100vh;
-	width: 100%;
-	justify-content: center;
-	margin: auto 0;
 	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	height: 100vh;
+	width: 100vw;
+	left: 0;
+	position: absolute;
 `;
 
 export const ProfileCardWrapper = styled.div`
@@ -15,7 +17,7 @@ export const ProfileCardWrapper = styled.div`
 	align-items: center;
 	width: 100%;
 	max-width: 500px;
-	padding: 3em 1.5em;
+	padding: 3em 2em;
 	border: 1px solid #e3e4e6;
 	font-family: "Fira Sans", sans-serif;
 	filter: drop-shadow(1px 1px 5px rgba(0, 0, 0, 0.05));
@@ -31,6 +33,8 @@ export const ProfileCardWrapper = styled.div`
 export const Avatar = styled.div`
 	display: flex;
 	margin: 0;
+	position: relative;
+	transition: all 0.2 ease;
 
 	img {
 		margin: 0 auto;
@@ -50,6 +54,7 @@ export const UserInfo = styled.div`
 	flex-direction: column;
 	display: flex;
 	justify-content: center;
+	padding: 1em 2em;
 
 	button {
 		margin-top: 15px;
@@ -62,23 +67,21 @@ export const UserInfo = styled.div`
 `;
 
 export const UserName = styled.p`
-	font-size: 1rem;
+	font-size: 0.75rem;
 	margin: 0;
 	padding: 0;
 
 	span {
-		font-size: 1rem;
 		font-weight: 600;
 	}
 `;
 
 export const UserEmail = styled.p`
-	font-size: 1rem;
+	font-size: 0.75rem;
 	margin: 0;
 	padding: 0;
 
 	span {
-		font-size: 1rem;
 		font-weight: 600;
 	}
 `;

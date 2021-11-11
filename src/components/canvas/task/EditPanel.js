@@ -4,7 +4,9 @@ import { dragDisabled } from "../../../features/draggingSlice";
 import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { updateTaskDocument } from "../../../firebase";
-import { BsPencilSquare } from "react-icons/bs";
+import { IoCalendarOutline } from "react-icons/io5";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 //styles
 import Button, { ButtonGroup } from "../../button/Button";
@@ -17,19 +19,25 @@ import {
 	TaskItem,
 	Body,
 	Footer,
+	DateWrapper,
 } from "./EditPanel.styles";
 
 // quill.js
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.core.css";
+import PriorityTag from "./PriorityTag";
 
 const EditPanel = ({ task }) => {
 	const dispatch = useDispatch();
 	const editMenuRef = useRef();
 	const [text, setText] = useState(task?.description || "");
-	const [name, setName] = useState(task?.name);
 	const { id: userId } = useSelector((state) => state?.user.value);
+	const [newValues, setNewValues] = useState({
+		name: task?.name,
+		due_to: task?.due_to?.toDate(),
+		priority: task?.priority,
+	});
 
 	// click outside
 	function useOutside(ref) {
@@ -50,7 +58,7 @@ const EditPanel = ({ task }) => {
 	useOutside(editMenuRef);
 
 	// Quill js  (input changes, updated doc, modules and formats)
-	const handleChange = (e) => {
+	const handleTextAreaChange = (e) => {
 		const value = {
 			...task?.description,
 			text: e,
@@ -58,21 +66,26 @@ const EditPanel = ({ task }) => {
 		setText(value.text);
 	};
 
-	const onChange = (e) => {
-		setName(e.target.innerHTML);
+	const handlePriorityChange = (e) => {
+		setNewValues({ ...newValues, priority: e.target.value });
+	};
+
+	const handleNameChange = (e) => {
+		console.log("name", e.target.textContent);
+		setNewValues({ ...newValues, name: e.target.textContent });
 	};
 
 	const handleUpdate = () => {
-		console.log(name, name.length);
-		if (name === "" || name.length < 3) {
+		if (newValues.name === "" || newValues.name.length < 3) {
 			toast.error("Name cannot be empty and must contain at least 3 characters.");
 		} else {
 			const updatedDoc = {
 				...task,
-				name: name,
+				name: newValues.name,
 				description: text,
+				priority: newValues.priority || "",
+				due_to: newValues.due_to || null,
 			};
-			console.log(updatedDoc, userId, task.id);
 			toast.success("Changes saved successfully!");
 			updateTaskDocument(userId, task.id, updatedDoc);
 		}
@@ -114,36 +127,41 @@ const EditPanel = ({ task }) => {
 		<EditTaskWrapper ref={editMenuRef}>
 			<Content>
 				<Body>
-					<Title>Task Info</Title>
+					<Title>
+						<p
+							onInput={handleNameChange}
+							contentEditable="true"
+							suppressContentEditableWarning={true}
+						>
+							{task.name}
+						</p>
+					</Title>
 					<TaskInfo>
 						<TaskItem>
-							<p>
-								<span>Name:</span>{" "}
-								<p onInput={onChange} contenteditable="true">
-									{task.name}
-								</p>
+							<span>Due date</span>
+							<DateWrapper>
 								<span className="icon">
-									<BsPencilSquare />
+									<IoCalendarOutline size={18} />
 								</span>
-							</p>
+								<DatePicker
+									selected={newValues.due_to}
+									onChange={(date) => setNewValues({ ...newValues, due_to: date })}
+									showTimeSelect
+									dateFormat="MMMM d, yyyy h:mm aa"
+								/>
+							</DateWrapper>
 						</TaskItem>
 						<TaskItem>
-							<p>
-								<span>ID:</span> {task.id}
-							</p>
+							<PriorityTag text={newValues.priority} onChange={handlePriorityChange} />
 						</TaskItem>
 						<TaskItem>
-							<p>
-								<span>Due date:</span> 27 March 2022
-							</p>
+							<p>Description</p>
 						</TaskItem>
 					</TaskInfo>
-
-					<Title>Notes</Title>
 					<EditingArea>
 						<ReactQuill
 							theme="snow"
-							onChange={handleChange}
+							onChange={handleTextAreaChange}
 							value={text}
 							modules={modules}
 							formats={formats}

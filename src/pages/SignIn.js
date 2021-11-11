@@ -34,7 +34,6 @@ const SignIn = () => {
 				// Signed in
 				const user = userCredential.user;
 				// ...
-				console.log("LOGGED IN WITH: ", userEmail, userPassword);
 				toast.success(`Welcome back, ${user.displayName}!`);
 				history.push({ BOARDS });
 			})

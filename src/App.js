@@ -1,14 +1,9 @@
 //styling, pages and components
+import React, { useEffect, useState, Suspense } from "react";
 import GlobalStyle from "./globalStyles";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Dashboard from "./pages/Dashboard";
-import Account from "./pages/Account";
 import { HOME, SIGN_UP, SIGN_IN, ACCOUNT, BOARDS } from "./constants/routes";
-import Error from "./pages/Error";
 
 //state
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginStatus } from "./features/userSlice";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -24,12 +19,20 @@ import "react-toastify/dist/ReactToastify.css";
 import Spinner from "./utilities/Spinner";
 import { AnimatedRoutes, RouteTransition } from "./utilities/AnimatedRoutes";
 import Sidebar from "./components/sidebar/Sidebar";
+import MobileSidebar from "./components/sidebar/MobileSidebar";
+
+// lazy
+const SignIn = React.lazy(() => import("./pages/SignIn"));
+const SignUp = React.lazy(() => import("./pages/SignUp"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const Account = React.lazy(() => import("./pages/Account"));
+const Error = React.lazy(() => import("./pages/Error"));
 
 function App() {
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(true);
 	const { isLogged } = useSelector((state) => state?.user.value);
-	console.log(isLogged);
+
 	// log out
 	function logOut() {
 		signOut(auth)
@@ -41,7 +44,8 @@ function App() {
 				console.error(error.message);
 			});
 	}
-	console.log(window.location.pathname);
+
+	//onAuthStateChange, dispatch empty user state.
 	useEffect(() => {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
@@ -74,35 +78,39 @@ function App() {
 			<GlobalStyle />
 			<div className="App">
 				{isLogged && <Sidebar logout={logOut} />}
-				<AnimatedRoutes exitBeforeEnter initial={false}>
-					<RouteTransition exact path={SIGN_IN}>
-						<SignIn isLogged={auth.currentUser} />
-					</RouteTransition>
+				{isLogged && <MobileSidebar logout={logOut} />}
 
-					<RouteTransition exact path={SIGN_UP}>
-						<SignUp isLogged={auth.currentUser} />
-					</RouteTransition>
+				<Suspense fallback={<Spinner />}>
+					<AnimatedRoutes exitBeforeEnter initial={false}>
+						<RouteTransition exact path={SIGN_IN}>
+							<SignIn isLogged={auth.currentUser} />
+						</RouteTransition>
 
-					{isLoading ? (
-						<Spinner />
-					) : (
-						<ProtectedRoute exact path={HOME} component={<Dashboard logout={logOut} />} />
-					)}
+						<RouteTransition exact path={SIGN_UP}>
+							<SignUp isLogged={auth.currentUser} />
+						</RouteTransition>
 
-					{isLoading ? (
-						<Spinner />
-					) : (
-						<ProtectedRoute exact path={BOARDS} component={<Dashboard />} />
-					)}
+						{isLoading ? (
+							<Spinner />
+						) : (
+							<ProtectedRoute exact path={HOME} component={<Dashboard logout={logOut} />} />
+						)}
 
-					{isLoading ? (
-						<Spinner />
-					) : (
-						<ProtectedRoute exact path={ACCOUNT} component={<Account logout={logOut} />} />
-					)}
+						{isLoading ? (
+							<Spinner />
+						) : (
+							<ProtectedRoute exact path={BOARDS} component={<Dashboard />} />
+						)}
 
-					<Route component={Error} />
-				</AnimatedRoutes>
+						{isLoading ? (
+							<Spinner />
+						) : (
+							<ProtectedRoute exact path={ACCOUNT} component={<Account logout={logOut} />} />
+						)}
+
+						<Route component={Error} />
+					</AnimatedRoutes>
+				</Suspense>
 				<ToastContainer
 					position="bottom-right"
 					autoClose={3000}

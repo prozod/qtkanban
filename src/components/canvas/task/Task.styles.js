@@ -72,4 +72,28 @@ export const TaskCard = styled.div`
 			font-size: 0.75rem;
 		}
 	}
+
+	.taskContent {
+		width: 100%;
+	}
+`;
+
+export const DueToDate = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	height: fit-content;
+	border-radius: 20px;
+	padding: 2px 10px;
+	font-weight: 600;
+	font-size: 0.75rem;
+	background-color: #e3e4e6; ;
+`;
+
+export const TaskExtraDetails = styled.div`
+	margin-top: 0.5em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 `;

@@ -9,6 +9,10 @@ export const store = configureStore({
 		disableDrag: disableDrag,
 		editMenu: editMenu,
 	},
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: false,
+		}),
 });
 
 export default store;

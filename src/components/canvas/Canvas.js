@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
@@ -12,66 +12,81 @@ import { editPanelVariants } from "../../utilities/Variants";
 // state + firebase
 import { db, updateBoardItems } from "../../firebase";
 import { collection, onSnapshot } from "@firebase/firestore";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateBoards, updateTasks } from "../../features/userSlice";
 
 const Table = styled.section`
 	display: flex;
-	width: 100%;
-	height: auto;
 	flex-wrap: wrap;
+	padding: 0 5em;
+	margin: 0;
 
 	@media (max-width: 768px) {
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		width: 50%;
 		margin: 0 auto;
-		margin-bottom: 2em;
+		padding: 0;
+		padding-bottom: 5em;
+	}
+
+	@media (max-width: 550px) {
+		width: 100%;
 	}
 `;
 
 function Canvas() {
-	const [tasks, setTasks] = useState();
-	const [boards, setBoards] = useState();
+	const dispatch = useDispatch();
 	const { id: userId } = useSelector((state) => state?.user.value);
 	const dragDisabled = useSelector((state) => state?.disableDrag.isDisabled);
 	const editMenuState = useSelector((state) => state.editMenu.isActive);
 	const menuTaskId = useSelector((state) => state.editMenu.taskId);
+	const tasks = useSelector((state) => state.user.tasks);
+	const boards = useSelector((state) => state.user.boards);
 
 	//getting tasks from firestore
 	useEffect(() => {
 		if (userId === null || userId === "" || userId === undefined) {
-			setTasks();
+			return null;
 		} else {
 			const getTasks = async (userId) => {
 				onSnapshot(collection(db, `users/${userId}/tasks`), (snapshot) => {
-					setTasks(
-						snapshot.docs.map((doc) => {
-							return { id: doc.id, ...doc.data() };
-						})
+					dispatch(
+						updateTasks(
+							snapshot.docs.map((doc) => {
+								return {
+									...doc.data(),
+									id: doc.id,
+								};
+							})
+						)
 					);
 				});
 			};
 			getTasks(userId);
 		}
-	}, [userId]);
+	}, [userId, dispatch]);
 
 	//getting boards from firestore
 	useEffect(() => {
 		if (userId === null || userId === "" || userId === undefined) {
-			setBoards();
+			return null;
 		} else {
 			const fetchData = async (userId) => {
 				onSnapshot(collection(db, `users/${userId}/boards`), (snapshot) => {
-					setBoards(
-						snapshot.docs.map((doc) => {
-							return { ...doc.data(), id: doc.id };
-						})
+					dispatch(
+						updateBoards(
+							snapshot.docs.map((doc) => {
+								return { ...doc.data(), id: doc.id };
+							})
+						)
 					);
 				});
 			};
 			fetchData(userId);
 		}
-	}, [userId]);
+	}, [userId, dispatch]);
 
 	// drag and drop functionality
 	const onDragEnd = (result) => {
@@ -148,65 +163,69 @@ function Canvas() {
 					});
 
 					return (
-						<motion.div
-							key={board.id}
-							initial={{ opacity: 0, y: "5vh" }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{
-								duration: 0.2,
-								delay: i * 0.2,
-							}}
-						>
-							<Board
-								userId={userId}
-								title={board.title}
-								color={board.color}
-								boardId={board.id}
-								boardItems={board.items}
+						<div key={board.id}>
+							<motion.div
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{
+									duration: 0.2,
+									delay: i * 0.2,
+								}}
 							>
-								<Droppable key={board.id} droppableId={board.board_id}>
-									{(provided, snapshot) => (
-										<div
-											ref={provided.innerRef}
-											{...provided.droppableProps}
-											style={{
-												backgroundColor: snapshot.isDraggingOver ? "#ebedfa" : "",
-												minHeight: "100px",
-												margin: 0,
-												borderRadius: "10px",
-											}}
-										>
-											{reorderedBoards.map((task, index) => {
-												return (
-													<Draggable
-														key={task.id}
-														draggableId={task.id}
-														index={index}
-														isDragDisabled={dragDisabled ? true : false}
-													>
-														{(provided, snapshot) => (
-															<div
-																ref={provided.innerRef}
-																{...provided.draggableProps}
-																{...provided.dragHandleProps}
-															>
-																<Task
-																	title={task.name}
-																	details={task.id}
-																	isDragging={snapshot.isDragging}
-																	boardId={board.id}
-																/>
-															</div>
-														)}
-													</Draggable>
-												);
-											})}
-											{provided.placeholder}
-										</div>
-									)}
-								</Droppable>
-							</Board>
-						</motion.div>
+								<Board
+									userId={userId}
+									title={board.title}
+									color={board.color}
+									boardId={board.id}
+									boardItems={board.items}
+								>
+									<Droppable key={board.id} droppableId={board.board_id}>
+										{(provided, snapshot) => (
+											<div
+												ref={provided.innerRef}
+												{...provided.droppableProps}
+												style={{
+													backgroundColor: snapshot.isDraggingOver ? "#ebedfa" : "",
+													minHeight: "100px",
+													margin: 0,
+													borderRadius: "10px",
+												}}
+											>
+												{reorderedBoards.map((task, index) => {
+													// console.log(new Date(task?.due_to).toDate());
+													return (
+														<Draggable
+															key={task.id}
+															draggableId={task.id}
+															index={index}
+															isDragDisabled={dragDisabled ? true : false}
+														>
+															{(provided, snapshot) => (
+																<div
+																	ref={provided.innerRef}
+																	{...provided.draggableProps}
+																	{...provided.dragHandleProps}
+																>
+																	<Task
+																		title={task.name}
+																		priority={task?.priority}
+																		isDragging={snapshot.isDragging}
+																		taskId={task.id}
+																		dueto={task?.due_to?.toDate().toDateString()}
+																		boardId={board.id}
+																	/>
+																</div>
+															)}
+														</Draggable>
+													);
+												})}
+												{provided.placeholder}
+											</div>
+										)}
+									</Droppable>
+								</Board>
+							</motion.div>
+						</div>
 					);
 				})}
 			</DragDropContext>

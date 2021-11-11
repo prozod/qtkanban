@@ -3,12 +3,12 @@ import Backdrop from "../../../utilities/Backdrop";
 import styled from "styled-components";
 import { Input, Label, Form } from "../../../utilities/Form";
 import Button from "../../button/Button";
-import { GithubPicker } from "react-color";
+import { SliderPicker } from "react-color";
 import { toast } from "react-toastify";
 import { createNewBoard } from "../../../firebase";
 import { useSelector } from "react-redux";
 import { GoX } from "react-icons/go";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const ModalWrapper = styled.div`
 	display: flex;
@@ -24,13 +24,19 @@ const ModalWrapper = styled.div`
 	border: 1px solid rgba(255, 255, 255, 0.5);
 	filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0.1));
 
+	label {
+		text-transform: none;
+		font-size: 0.75rem;
+	}
+
 	.ModalTitle {
-		font-weight: 600;
+		text-transform: uppercase;
 		color: #5c5c65;
-		font-size: 1rem;
+		font-size: 0.75rem;
+		font-weight: 600;
 		padding: 0;
 		margin: 0;
-		margin-bottom: 1.5em;
+		margin-bottom: 2em;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -68,19 +74,17 @@ const ColorPicker = styled.div`
 	}
 `;
 
-export default function CreateBoardModal({ closeModal }) {
+export default function CreateBoardModal({ closeModal, setToggle }) {
 	const [pickedColor, setPickedColor] = useState("");
 	const [boardName, setBoardName] = useState("");
 	const user = useSelector((state) => state?.user.value);
 
 	function handleChange(color, event) {
-		console.log(event);
 		setPickedColor(color.hex);
 	}
 
 	function onBoardNameChange(e) {
 		setBoardName(e.target.value);
-		console.log(e.target.value);
 	}
 
 	function handleSubmit(e) {
@@ -97,8 +101,7 @@ export default function CreateBoardModal({ closeModal }) {
 				items: [],
 				title: boardName,
 			});
-
-			console.log(pickedColor, user.id, boardName);
+			setToggle(false);
 		}
 	}
 
@@ -134,13 +137,14 @@ export default function CreateBoardModal({ closeModal }) {
 							<GoX title="Close modal" />
 						</span>
 					</div>
+
 					<Form onSubmit={handleSubmit}>
-						<Label id="boardname" text="Board name" />
+						<Label id="boardname" text="Name" />
 						<Input id="boardname" value={boardName} onChange={onBoardNameChange} />
 						<ColorPicker>
-							<Label text="Board color" />
+							<Label text="Color" />
 							<span>
-								<GithubPicker triangle="hide" color={pickedColor} onChange={handleChange} />
+								<SliderPicker triangle="hide" color={pickedColor} onChange={handleChange} />
 							</span>
 						</ColorPicker>
 						<Button type="submit" className="Btn">

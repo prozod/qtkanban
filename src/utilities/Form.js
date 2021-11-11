@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 const FormWrapper = styled.form`
@@ -59,6 +58,7 @@ export const Input = ({ id, type, value, onChange, placeholder, ...rest }) => {
 				value={value}
 				onChange={onChange}
 				placeholder={placeholder}
+				autoFocus={true}
 			></FormInput>
 		</InputWrapper>
 	);

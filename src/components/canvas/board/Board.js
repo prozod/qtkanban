@@ -4,14 +4,30 @@ import { Form, Input } from "../../../utilities/Form";
 import { IoMdAdd } from "react-icons/io";
 import { GoCheck } from "react-icons/go";
 import { createNewTask } from "../../../firebase";
-import { BoardContainer, BoardArea, CardHeader, Cards, NewTask, Divider } from "./Board.styles";
+import {
+	BoardContainer,
+	BoardArea,
+	CardHeader,
+	Cards,
+	NewTask,
+	Divider,
+	CardHeaderContent,
+	ActiveTasks,
+} from "./Board.styles";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { createTaskVariant } from "../../../utilities/Variants";
+import DeleteBoardModal from "./DeleteBoardModal";
 
 export default function Board({ userId, children, boardId, color, title, boardItems }) {
 	const [taskName, setTaskName] = useState({ id: 0, value: "" });
 	const [isClicked, setIsClicked] = useState(false);
+	const [showDropdown, setShowDropdown] = useState(false);
+
+	function toggleDropdown(e) {
+		e.stopPropagation();
+		setShowDropdown(!showDropdown);
+	}
 
 	//Form handling for new tasks
 	const handleClick = () => {
@@ -60,21 +76,27 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 
 	return (
 		<BoardContainer>
-			{/* <motion.div key="boards" initial={{ opacity: 0, y: "10vh" }} animate={{ opacity: 1, y: 0 }}> */}
 			<BoardArea>
-				<CardHeader dotColor={color}>
-					<p>
-						{title}{" "}
-						{boardItems.length > 0 ? (
-							<span aria-describedby="Currently active" role="button">
-								{boardItems.length}
-							</span>
-						) : null}
-					</p>
+				<CardHeader>
+					<CardHeaderContent dotColor={color} onClick={() => setShowDropdown(!showDropdown)}>
+						{title}
+					</CardHeaderContent>
+					{boardItems.length > 0 ? (
+						<ActiveTasks aria-describedby="Currently active" role="button">
+							{boardItems.length}
+						</ActiveTasks>
+					) : null}
 				</CardHeader>
+				{showDropdown && (
+					<DeleteBoardModal
+						boardItems={boardItems}
+						userId={userId}
+						boardId={boardId}
+						setDropdown={toggleDropdown}
+					/>
+				)}
 				<Divider />
 				<Cards>{children}</Cards>
-
 				<NewTask ref={newtaskRef}>
 					{isClicked && (
 						<Form onSubmit={handleSubmit}>
@@ -103,10 +125,6 @@ export default function Board({ userId, children, boardId, color, title, boardIt
 					)}
 				</NewTask>
 			</BoardArea>
-			{/* </motion.div> */}
 		</BoardContainer>
 	);
 }
-
-// onclickoutside, set isClicked to false so the create issue shows again
-// collection(db, `users`, `${id}`, `tasks`),

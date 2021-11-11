@@ -1,38 +1,17 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.section`
-	width: 100%;
+	width: 100vw;
 	height: 100vh;
 	display: flex;
+	flex: 1;
 	justify-content: center;
 	align-items: center;
 	font-family: "Fira Sans", sans-serif;
 	background-color: transparent;
 
 	@media (max-width: 768px) {
-		width: 100%;
-	}
-`;
-
-export const Divider = styled.div`
-	display: flex;
-	margin: 0 auto;
-	width: 100%;
-	height: 1px;
-	background-color: #e3e4e6;
-	margin: 1.5em 0;
-`;
-
-export const DividerGroup = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	p {
-		margin: 0 5px;
-		font-size: 0.75rem;
-		height: fit-content;
-		color: darkgray;
+		width: 100vw;
 	}
 `;
 
@@ -45,16 +24,17 @@ export const Box = styled.div`
 	border-radius: 10px;
 	max-width: 350px;
 	width: 100%;
+	min-width: 200px;
 
 	.NewAccount {
 		color: #1f1f1f;
 		margin: 0 auto;
 		font-size: 1.5rem;
+	}
 
-		@media (max-width: 768px) {
-			font-size: 1rem;
-			height: 100%;
-		}
+	@media (max-width: 768px) {
+		max-width: 250px;
+		font-size: 1rem;
 	}
 `;
 
@@ -103,10 +83,6 @@ export const UniqueFormWrapper = styled.div`
 
 	button {
 		margin-top: 2em;
-
-		span {
-			margin: 0px 5px;
-		}
 	}
 
 	.forgottenpassword {
@@ -128,5 +104,27 @@ export const UniqueFormWrapper = styled.div`
 		&:hover {
 			text-decoration: underline;
 		}
+	}
+`;
+
+export const Divider = styled.div`
+	display: flex;
+	margin: 0 auto;
+	width: 100%;
+	height: 1px;
+	background-color: #e3e4e6;
+	margin: 1.5em 0;
+`;
+
+export const DividerGroup = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	p {
+		margin: 0 5px;
+		font-size: 0.75rem;
+		height: fit-content;
+		color: darkgray;
 	}
 `;

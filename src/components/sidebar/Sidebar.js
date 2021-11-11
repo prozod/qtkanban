@@ -1,6 +1,6 @@
 import React from "react";
 import { SidebarContainer, Icon, UserProfilePicture, Top, Bottom } from "./Sidebar.styles";
-import { IoMenuOutline, IoDocumentsOutline, IoExitOutline } from "react-icons/io5";
+import { IoDocumentsOutline, IoExitOutline } from "react-icons/io5";
 import userAvatar from "../../images/useravatar.webp";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -11,12 +11,9 @@ export default function Sidebar({ logout }) {
 	return (
 		<SidebarContainer>
 			<Top>
-				<Icon>
-					<IoMenuOutline size={24} title="Menu" />
-				</Icon>
 				<Link to="/boards">
 					<Icon>
-						<IoDocumentsOutline size={24} title="Tasks" />
+						<IoDocumentsOutline size={24} title="Boards" />
 					</Icon>
 				</Link>
 			</Top>

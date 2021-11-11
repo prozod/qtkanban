@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { TaskCard } from "./Task.styles";
+import { DueToDate, TaskCard, TaskExtraDetails } from "./Task.styles";
 import { DropdownTaskMenu, menuRef } from "./DropdownTaskMenu";
 import { useDispatch } from "react-redux";
 import { dragDisabled } from "../../../features/draggingSlice";
 import { FiMoreVertical } from "react-icons/fi";
+import { PriorityTagWrapper } from "./PriorityTag";
 
-export const Task = ({ key, title, details, boardId }) => {
+export const Task = ({ key, title, priority, boardId, taskId, dueto }) => {
 	const dispatch = useDispatch();
 	const [showDropdown, setShowDropdown] = useState(false);
 
@@ -39,13 +40,21 @@ export const Task = ({ key, title, details, boardId }) => {
 					<p className="title" onClick={() => dispatch(dragDisabled(false))}>
 						{title}
 					</p>
+					<TaskExtraDetails>
+						{priority && <PriorityTagWrapper text={priority} />}
+						{dueto && (
+							<DueToDate>{dueto.split(" ")[0] + ", " + dueto.slice(3, dueto.length)}</DueToDate>
+						)}
+					</TaskExtraDetails>
 				</div>
 
 				<button aria-label="Task options" className="moreOptions" onClick={handleDropdown}>
 					<FiMoreVertical size={19} title="Options" />
 				</button>
 			</div>
-			{showDropdown && <DropdownTaskMenu taskId={details} boardId={boardId} />}
+			{showDropdown && (
+				<DropdownTaskMenu taskId={taskId} boardId={boardId} setDropdown={setShowDropdown} />
+			)}
 		</TaskCard>
 	);
 };

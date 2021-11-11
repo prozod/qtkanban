@@ -10,6 +10,9 @@ export default function Header() {
 	function toggle(e) {
 		e.stopPropagation();
 		setToggleModal(!toggleModal);
+		window.addEventListener("keyup", (e) => {
+			if (e.key === 27) setToggleModal(false);
+		});
 	}
 
 	return (
@@ -19,7 +22,7 @@ export default function Header() {
 				<CreateBoard onClick={toggle} />
 			</HeaderNavigation>
 			<Divider />
-			{toggleModal && <CreateBoardModal closeModal={toggle} />}
+			{toggleModal && <CreateBoardModal closeModal={toggle} setToggle={setToggleModal} />}
 
 			{/* <BoardsNavigation>
 				<p className="name">

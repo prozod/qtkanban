@@ -5,7 +5,13 @@
 Quicktools Task Tracker is a kanban-like web application with full user authentication and a personal canvas on which you can create, delete and manage your own boards and tasks. <br/>
 Each task has an individual priority tab, deadline date, drag & drop, and task description.
 
-[**LIVE DEMO**](https://tasks.quicktools.co)
+---
+
+#### **DEMO ACCOUNT** <br/>
+Email: mark@hello.com  <br/>
+Password: password
+
+[**GO TO THE LIVE DEMO**](https://tasks.quicktools.co)
 
 ---
 

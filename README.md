@@ -11,7 +11,7 @@ Each task has an individual priority tab, deadline date, drag & drop, and task d
 Email: mark@hello.com  <br/>
 Password: password
 
-[**GO TO THE LIVE DEMO**](https://tasks.quicktools.co)
+[**GO TO THE LIVE DEMO**](https://quicktools-tasktracker.vercel.app/)
 
 ---
 
